@@ -1,6 +1,5 @@
 package main
 
-func binarySearch(arr []int, target int) int {
+func binarySearch(arr []int, target int) (int, error) {
 	// change me
-	return -1
 }

@@ -1,36 +1,42 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBinarySearch(t *testing.T) {
+	expectedError := errors.New("not found")
 	tests := []struct {
 		name           string
 		array          []int
 		target         int
 		expectedResult int
+		expectedError  error
 	}{
 		// Basic cases
-		// {
-		// 	name:           "Should find element in the middle of array",
-		// 	array:          []int{1, 2, 3, 4, 5},
-		// 	target:         3,
-		// 	expectedResult: 2,
-		// },
+		{
+			name:           "Should find element in the middle of array",
+			array:          []int{1, 2, 3, 4, 5},
+			target:         3,
+			expectedResult: 2,
+			expectedError:  nil,
+		},
 		{
 			name:           "Should find first element",
 			array:          []int{1, 2, 3, 4, 5},
 			target:         1,
 			expectedResult: 0,
+			expectedError:  nil,
 		},
 		{
 			name:           "Should find last element",
 			array:          []int{1, 2, 3, 4, 5},
 			target:         5,
 			expectedResult: 4,
+			expectedError:  nil,
 		},
 		// Edge cases
 		{
@@ -38,18 +44,21 @@ func TestBinarySearch(t *testing.T) {
 			array:          []int{1, 2, 3, 4, 5},
 			target:         0,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 		{
 			name:           "Should return -1 for element greater than all",
 			array:          []int{1, 2, 3, 4, 5},
 			target:         6,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 		{
 			name:           "Should work with empty array",
 			array:          []int{},
 			target:         1,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 		{
 			name:           "Should work with single element array when found",
@@ -62,6 +71,7 @@ func TestBinarySearch(t *testing.T) {
 			array:          []int{1},
 			target:         2,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 		// Large arrays
 		{
@@ -89,6 +99,7 @@ func TestBinarySearch(t *testing.T) {
 			array:          []int{1, 2},
 			target:         3,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 		{
 			name:           "Should work with array of same elements when target is present",
@@ -101,13 +112,19 @@ func TestBinarySearch(t *testing.T) {
 			array:          []int{5, 5, 5, 5, 5},
 			target:         4,
 			expectedResult: -1,
+			expectedError:  expectedError,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := binarySearch(tt.array, tt.target)
+			result, err := binarySearch(tt.array, tt.target)
 			assert.Equal(t, tt.expectedResult, result)
+			if tt.expectedError != nil {
+				assert.EqualError(t, err, tt.expectedError.Error())
+			} else {
+				assert.NoError(t, err)
+			}
 		})
 	}
 }
